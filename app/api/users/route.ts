@@ -38,6 +38,15 @@ export async function POST(request: NextRequest) {
       if (signUpError.message.includes('already registered')) {
         return errorResponse('Email already registered', 409);
       }
+      if (
+        signUpError.message.toLowerCase().includes('rate limit') ||
+        signUpError.message.toLowerCase().includes('email rate limit exceeded')
+      ) {
+        return errorResponse(
+          'Terlalu banyak pendaftaran dalam waktu singkat. Silakan coba lagi dalam 1 jam atau hubungi admin.',
+          429
+        );
+      }
       return errorResponse(signUpError.message || 'Registration failed', 400);
     }
 

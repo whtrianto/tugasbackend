@@ -77,7 +77,29 @@ Jangan commit `.env.local` (sudah di-ignore di `.gitignore`).
 
 ---
 
-## 5. Checklist
+## 5. "Email rate limit exceeded" saat register
+
+Supabase **membatasi pengiriman email** (signup, reset password) dengan SMTP bawaan: **sekitar 4 email per jam**. Setelah itu muncul error `email rate limit exceeded`.
+
+**Solusi:**
+
+1. **Pakai Custom SMTP (disarankan untuk production)**  
+   - Supabase Dashboard → **Project Settings** → **Auth** → **SMTP Settings**.  
+   - Aktifkan **Custom SMTP** dan isi dengan provider (Resend, SendGrid, Mailgun, Gmail, dll.).  
+   - Dengan SMTP sendiri, limit bawaan Supabase tidak berlaku; limit mengikuti provider Anda.
+
+2. **Untuk development / testing**  
+   - Bisa **nonaktifkan konfirmasi email**: **Authentication** → **Providers** → **Email** → matikan **Confirm email**.  
+   - User langsung terdaftar tanpa email konfirmasi. Limit tetap ada untuk endpoint, tapi tidak mengirim email.
+
+3. **Tunggu ~1 jam**  
+   - Limit per jam akan reset; setelah itu pendaftaran bisa dicoba lagi.
+
+API ini sudah mengembalikan pesan ramah (HTTP 429) saat rate limit: *"Terlalu banyak pendaftaran dalam waktu singkat. Silakan coba lagi dalam 1 jam atau hubungi admin."*
+
+---
+
+## 6. Checklist
 
 - [ ] Project Supabase aktif dan tabel + RLS sudah sesuai
 - [ ] `.env.local` terisi untuk development (tanpa commit)
